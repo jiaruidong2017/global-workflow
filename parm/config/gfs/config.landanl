@@ -8,6 +8,8 @@ echo "BEGIN: config.landanl"
 # Get task specific resources
 . "${EXPDIR}/config.resources" landanl
 
+export SNOWANLPY="${HOMEgfs}/scripts/exglobal_land_analysis.py"
+
 obs_list_name=gdas_land_gts_only.yaml
 if [[ "${cyc}" = "18" ]]; then
     obs_list_name=gdas_land_prototype.yaml

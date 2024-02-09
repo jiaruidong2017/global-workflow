@@ -2446,20 +2446,20 @@ class GFSTasks(Tasks):
             landensanlenvars.append(rocoto.create_envar(name=key, value=str(value)))
 
         resources = self.get_resource('landensanl')
-        task_name = f'{self.cdump}landensanl_mem#member#'
+        task_name = f'{self.cdump}landanl_mem#member#'
         task_dict = {'task_name': task_name,
                      'resources': resources,
                      'dependency': dependencies,
                      'envars': landensanlenvars,
                      'cycledef': self.cdump.replace('enkf', ''),
-                     'command': f'{self.HOMEgfs}/jobs/rocoto/landensanl.sh',
+                     'command': f'{self.HOMEgfs}/jobs/rocoto/landanl.sh',
                      'job_name': f'{self.pslot}_{task_name}_@H',
                      'log': f'{self.rotdir}/logs/@Y@m@d@H/{task_name}.log',
                      'maxtries': '&MAXTRIES;'
                      }
 
         member_var_dict = {'member': ' '.join([str(mem).zfill(3) for mem in range(1, self.nmem + 1)])}
-        metatask_dict = {'task_name': f'{self.cdump}landensanl',
+        metatask_dict = {'task_name': f'{self.cdump}landanl',
                          'var_dict': member_var_dict,
                          'task_dict': task_dict
                          }
@@ -2549,7 +2549,7 @@ class GFSTasks(Tasks):
         deps.append(rocoto.add_dependency(dep_dict))
         dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
         if self.app_config.do_jedilandda:
-            dep_dict = {'type': 'metatask', 'name': f'{self.cdump}landensanl'}
+            dep_dict = {'type': 'metatask', 'name': f'{self.cdump}landanl'}
             deps.append(rocoto.add_dependency(dep_dict))
             dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
         else:
