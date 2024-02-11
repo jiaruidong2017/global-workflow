@@ -271,6 +271,7 @@ class LandAnalysis(Analysis):
 
         # generate letkfoi YAML file
         logger.info(f"Generate JEDI LETKF YAML file: {self.task_config.jedi_yaml}")
+        self.task_config.OCNRES = f'{localconf.OCNRES:03d}'
         letkfoi_yaml = parse_j2yaml(self.task_config.JEDIYAML, self.task_config)
         save_as_yaml(letkfoi_yaml, self.task_config.jedi_yaml)
         logger.info(f"Wrote letkfoi YAML to: {self.task_config.jedi_yaml}")
