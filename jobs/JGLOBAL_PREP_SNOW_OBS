@@ -1,8 +1,8 @@
 #! /usr/bin/env bash
 
 source "${HOMEgfs}/ush/preamble.sh"
-export DATA=${DATA:-${DATAROOT}/${RUN}landanl_${cyc}}
-source "${HOMEgfs}/ush/jjob_header.sh" -e "preplandobs" -c "base preplandobs"
+export DATA=${DATA:-${DATAROOT}/${RUN}snowanl_${cyc}}
+source "${HOMEgfs}/ush/jjob_header.sh" -e "prepsnowobs" -c "base prepsnowobs"
 
 ##############################################
 # Set variables used in the script
@@ -24,7 +24,7 @@ RUN=${RUN} YMD=${gPDY} HH=${gcyc} generate_com -rx \
 
 ###############################################################
 # Run relevant script
-EXSCRIPT=${GDASLANDPREPSH:-${HOMEgfs}/scripts/exglobal_prep_land_obs.py}
+EXSCRIPT=${GDASSNOWPREPPY:-${HOMEgfs}/scripts/exglobal_prep_snow_obs.py}
 ${EXSCRIPT}
 status=$?
 [[ ${status} -ne 0 ]] && (echo "FATAL ERROR: Error executing ${EXSCRIPT}, ABORT!"; exit "${status}")
