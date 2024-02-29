@@ -859,6 +859,20 @@ case ${step} in
     export is_exclusive=True
     ;;
 
+"snowensanl")
+
+    export layout_x=1
+    export layout_y=1
+
+    export wtime_snowensanl="00:15:00"
+    export npe_snowensanl=$(( layout_x * layout_y * 6 ))
+    export npe_snowensanl_gfs=$(( layout_x * layout_y * 6 ))
+    export nth_snowensanl=1
+    export nth_snowensanl_gfs=${nth_snowensanl}
+    export npe_node_snowensanl=$(( npe_node_max / nth_snowensanl ))
+    export is_exclusive=True
+    ;;
+
   "eobs" | "eomg")
     export wtime_eobs="00:15:00"
     export wtime_eomg="00:30:00"
