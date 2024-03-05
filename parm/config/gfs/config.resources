@@ -18,7 +18,7 @@ if (( $# != 1 )); then
     echo "upp atmos_products"
     echo "tracker genesis genesis_fsu"
     echo "verfozn verfrad vminmon fit2obs metp arch cleanup"
-    echo "eobs ediag eomg eupd ecen esfc efcs epos earc"
+    echo "eobs ediag eomg eupd ecen esfc efcs epos earc esno"
     echo "init_chem mom6ic oceanice_products"
     echo "waveinit waveprep wavepostsbs wavepostbndpnt wavepostbndpntbll wavepostpnt"
     echo "wavegempak waveawipsbulls waveawipsgridded"
@@ -231,7 +231,7 @@ case ${step} in
     export is_exclusive=True
     ;;
 
-  "snowanl")
+  "snowanl" | "esno")
     # below lines are for creating JEDI YAML
     case ${CASE} in
       "C768")
@@ -254,10 +254,10 @@ case ${step} in
     export layout_x
     export layout_y
 
-    export wtime_snowanl="00:15:00"
-    export npe_snowanl=$(( layout_x * layout_y * 6 ))
-    export nth_snowanl=1
-    export npe_node_snowanl=$(( npe_node_max / nth_snowanl ))
+    declare -x "wtime_${step}"="00:15:00"
+    declare -x "npe_${step}"="$(( layout_x * layout_y * 6 ))"
+    declare -x "nth_${step}"=1
+    declare -x "npe_node_${step}"="${npe_node_max}"
     ;;
 
   "aeroanlinit")
@@ -856,20 +856,6 @@ case ${step} in
     export npe_atmensanlfinal=${npe_node_max}
     export nth_atmensanlfinal=1
     export npe_node_atmensanlfinal=$(( npe_node_max / nth_atmensanlfinal ))
-    export is_exclusive=True
-    ;;
-
-"snowensanl")
-
-    export layout_x=1
-    export layout_y=1
-
-    export wtime_snowensanl="00:15:00"
-    export npe_snowensanl=$(( layout_x * layout_y * 6 ))
-    export npe_snowensanl_gfs=$(( layout_x * layout_y * 6 ))
-    export nth_snowensanl=1
-    export nth_snowensanl_gfs=${nth_snowensanl}
-    export npe_node_snowensanl=$(( npe_node_max / nth_snowensanl ))
     export is_exclusive=True
     ;;
 

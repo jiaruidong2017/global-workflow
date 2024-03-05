@@ -2,7 +2,7 @@
 
 source "${HOMEgfs}/ush/preamble.sh"
 if (( 10#${ENSMEM:-0} > 0 )); then
-  source "${HOMEgfs}/ush/jjob_header.sh" -e "snowensanl" -c "base snowanl snowensanl"
+  source "${HOMEgfs}/ush/jjob_header.sh" -e "esno" -c "base snowanl esno"
   export CASE=${CASE_ENS}
 else
   source "${HOMEgfs}/ush/jjob_header.sh" -e "snowanl" -c "base snowanl"

@@ -2413,7 +2413,7 @@ class GFSTasks(Tasks):
 
         return task
 
-    def snowensanl(self):
+    def esno(self):
 
         deps = []
         dep_dict = {'type': 'task', 'name': f'{self.cdump.replace("enkf","")}prepsnowobs'}
@@ -2422,19 +2422,19 @@ class GFSTasks(Tasks):
         deps.append(rocoto.add_dependency(dep_dict))
         dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
 
-        snowensanlenvars = self.envars.copy()
-        snowensanlenvars_dict = {'ENSMEM': '#member#',
+        esnoenvars = self.envars.copy()
+        esnoenvars_dict = {'ENSMEM': '#member#',
                                  'MEMDIR': 'mem#member#'
                                  }
-        for key, value in snowensanlenvars_dict.items():
-            snowensanlenvars.append(rocoto.create_envar(name=key, value=str(value)))
+        for key, value in esnoenvars_dict.items():
+            esnoenvars.append(rocoto.create_envar(name=key, value=str(value)))
 
-        resources = self.get_resource('snowensanl')
+        resources = self.get_resource('esno')
         task_name = f'{self.cdump}snowanl_mem#member#'
         task_dict = {'task_name': task_name,
                      'resources': resources,
                      'dependency': dependencies,
-                     'envars': snowensanlenvars,
+                     'envars': esnoenvars,
                      'cycledef': self.cdump.replace('enkf', ''),
                      'command': f'{self.HOMEgfs}/jobs/rocoto/snowanl.sh',
                      'job_name': f'{self.pslot}_{task_name}_@H',
