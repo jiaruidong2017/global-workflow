@@ -2424,8 +2424,8 @@ class GFSTasks(Tasks):
 
         epsnenvars = self.envars.copy()
         epsnenvars_dict = {'ENSMEM': '#member#',
-                                 'MEMDIR': 'mem#member#'
-                                 }
+                           'MEMDIR': 'mem#member#'
+                           }
         for key, value in epsnenvars_dict.items():
             epsnenvars.append(rocoto.create_envar(name=key, value=str(value)))
 
@@ -2461,8 +2461,8 @@ class GFSTasks(Tasks):
 
         esnoenvars = self.envars.copy()
         esnoenvars_dict = {'ENSMEM': '#member#',
-                                 'MEMDIR': 'mem#member#'
-                                 }
+                           'MEMDIR': 'mem#member#'
+                           }
         for key, value in esnoenvars_dict.items():
             esnoenvars.append(rocoto.create_envar(name=key, value=str(value)))
 
