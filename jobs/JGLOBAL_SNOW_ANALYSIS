@@ -12,10 +12,6 @@ fi
 rCDUMP=${RUN}
 [[ ${RUN} == "gfs" ]] && export rCDUMP="gdas"
 
-# Get OBS for ENKFGDAS run from GDAS
-oCDUMP=${RUN}
-[[ ${RUN} == "enkfgdas" ]] && export oCDUMP="gdas"
-
 ##############################################
 # Set variables used in the script
 ##############################################
@@ -29,8 +25,7 @@ gcyc=${GDATE:8:2}
 # Begin JOB SPECIFIC work
 ##############################################
 # Generate COM variables from templates
-RUN=${oCDUMP} YMD=${PDY} HH=${cyc} generate_com -x COM_OBS
-YMD=${PDY} HH=${cyc} generate_com -rx COM_SNOW_ANALYSIS COM_CONF
+YMD=${PDY} HH=${cyc} generate_com -rx COM_SNOW_ANALYSIS COM_CONF COM_OBS
 
 RUN=${rCDUMP} YMD=${gPDY} HH=${gcyc} generate_com -rx \
     COM_ATMOS_RESTART_PREV:COM_ATMOS_RESTART_TMPL
