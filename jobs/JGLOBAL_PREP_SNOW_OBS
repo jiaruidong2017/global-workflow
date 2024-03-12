@@ -39,7 +39,7 @@ mkdir -m 775 -p "${COM_OBS_OUT}"
 
 ###############################################################
 # Run relevant script
-EXSCRIPT=${GDASSNOWPREPPY:-${HOMEgfs}/scripts/exglobal_prep_snow_obs.py}
+EXSCRIPT=${GDASSNOWPREPPY:-${SCRgfs}/exglobal_prep_snow_obs.py}
 ${EXSCRIPT}
 status=$?
 [[ ${status} -ne 0 ]] && (echo "FATAL ERROR: Error executing ${EXSCRIPT}, ABORT!"; exit "${status}")
