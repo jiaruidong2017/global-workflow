@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+########## config.esno ##########
+# Land Ens Analysis specific
+
+echo "BEGIN: config.esno"
+
+source "${EXPDIR}/config.snowanl"
+
+# Get task specific resources
+. "${EXPDIR}/config.resources" esno
+
+export NMEM_ELDAGRP=10
+
+echo "END: config.esno"
