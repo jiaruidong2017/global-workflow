@@ -21,4 +21,5 @@ export PYTHONPATH
 # Execute the JJOB
 "${HOMEgfs}/jobs/JGLOBAL_SNOW_ANALYSIS"
 status=$?
+
 exit "${status}"

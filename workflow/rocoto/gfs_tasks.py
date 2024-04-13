@@ -2469,6 +2469,43 @@ class GFSTasks(Tasks):
 
         return task
 
+    def esno(self):
+
+        deps = []
+        dep_dict = {'type': 'metatask', 'name': f'{self.cdump}prepsnowobs'}
+        deps.append(rocoto.add_dependency(dep_dict))
+        dependencies = rocoto.create_dependency(dep=deps)
+
+        esnoenvars = self.envars.copy()
+        esnoenvars_dict = {'ENSMEM': '#member#',
+                           'MEMDIR': 'mem#member#'
+                           }
+        for key, value in esnoenvars_dict.items():
+            esnoenvars.append(rocoto.create_envar(name=key, value=str(value)))
+
+        resources = self.get_resource('esno')
+        task_name = f'{self.cdump}snowanl_mem#member#'
+        task_dict = {'task_name': task_name,
+                     'resources': resources,
+                     'dependency': dependencies,
+                     'envars': esnoenvars,
+                     'cycledef': self.cdump.replace('enkf', ''),
+                     'command': f'{self.HOMEgfs}/jobs/rocoto/snowanl.sh',
+                     'job_name': f'{self.pslot}_{task_name}_@H',
+                     'log': f'{self.rotdir}/logs/@Y@m@d@H/{task_name}.log',
+                     'maxtries': '&MAXTRIES;'
+                     }
+
+        member_var_dict = {'member': ' '.join([str(mem).zfill(3) for mem in range(1, self.nmem + 1)])}
+        metatask_dict = {'task_name': f'{self.cdump}snowanl',
+                         'var_dict': member_var_dict,
+                         'task_dict': task_dict
+                         }
+
+        task = rocoto.create_task(metatask_dict)
+
+        return task
+
     def ecen(self):
 
         def _get_ecengroups():
@@ -2549,6 +2586,12 @@ class GFSTasks(Tasks):
             dep_dict = {'type': 'task', 'name': f'{self.cdump}eupd'}
         deps.append(rocoto.add_dependency(dep_dict))
         dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
+        if self.app_config.do_jedisnowda:
+            dep_dict = {'type': 'metatask', 'name': f'{self.cdump}snowanl'}
+            deps.append(rocoto.add_dependency(dep_dict))
+            dependencies = rocoto.create_dependency(dep_condition='and', dep=deps)
+        else:
+            dependencies = rocoto.create_dependency(dep=deps)
 
         resources = self.get_resource('esfc')
         task_name = f'{self.cdump}esfc'

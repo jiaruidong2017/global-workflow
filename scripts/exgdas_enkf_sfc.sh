@@ -201,10 +201,18 @@ if [ $DOSFCANL_ENKF = "YES" ]; then
             RUN="${GDUMP_ENS}" MEMDIR=${gmemchar} YMD=${gPDY} HH=${gcyc} declare_from_tmpl \
                 COM_ATMOS_RESTART_MEM_PREV:COM_ATMOS_RESTART_TMPL
 
+            RUN="${GDUMP_ENS}" MEMDIR=${memchar} YMD=${PDY} HH=${cyc} declare_from_tmpl \
+                COM_SNOW_MEM_ANALYSIS:COM_SNOW_ANALYSIS_TMPL
+
             [[ ${TILE_NUM} -eq 1 ]] && mkdir -p "${COM_ATMOS_RESTART_MEM}"
 
-            ${NCP} "${COM_ATMOS_RESTART_MEM_PREV}/${PDY}.${cyc}0000.sfc_data.tile${n}.nc" \
-                "${COM_ATMOS_RESTART_MEM}/${PDY}.${cyc}0000.sfcanl_data.tile${n}.nc"
+            if [[ ${DO_JEDISNOWDA:-"NO"} = "YES" ]]; then
+                ${NCP} "${COM_SNOW_MEM_ANALYSIS}/${PDY}.${cyc}0000.sfc_data.tile${n}.nc" \
+                    "${COM_ATMOS_RESTART_MEM}/${PDY}.${cyc}0000.sfcanl_data.tile${n}.nc"
+            else
+                ${NCP} "${COM_ATMOS_RESTART_MEM_PREV}/${PDY}.${cyc}0000.sfc_data.tile${n}.nc" \
+                    "${COM_ATMOS_RESTART_MEM}/${PDY}.${cyc}0000.sfcanl_data.tile${n}.nc"
+            fi
             ${NLN} "${COM_ATMOS_RESTART_MEM_PREV}/${PDY}.${cyc}0000.sfc_data.tile${n}.nc" \
                 "${DATA}/fnbgsi.${cmem}"
             ${NLN} "${COM_ATMOS_RESTART_MEM}/${PDY}.${cyc}0000.sfcanl_data.tile${n}.nc" \
