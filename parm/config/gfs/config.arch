@@ -12,4 +12,8 @@ export ARCH_GAUSSIAN="YES"
 export ARCH_GAUSSIAN_FHMAX=${FHMAX_GFS}
 export ARCH_GAUSSIAN_FHINC=${FHOUT_GFS}
 
+if [[ $SNOWOBSTYPE == "GHCN" && $cyc != "00" ]]; then
+    export DO_JEDISNOWDA="NO"
+fi
+
 echo "END: config.arch"

@@ -19,6 +19,12 @@ if __name__ == '__main__':
 
     # Instantiate the snow analysis task
     anl = SnowAnalysis(config)
-    anl.initialize()
-    anl.execute()
-    anl.finalize()
+    if anl.task_config.SNOWOBSTYPE == "GHCN":
+        if anl.task_config.cyc == 0:
+            anl.initialize()
+            anl.execute()
+            anl.finalize()
+    else:
+        anl.initialize()
+        anl.execute()
+        anl.finalize()

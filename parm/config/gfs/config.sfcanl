@@ -13,4 +13,9 @@ if [[ "${DO_JEDIATMVAR}" == "YES" ]]; then
    export DONST="NO"
 fi
 
+# Turn off SNOW DA for three cycles except 00z
+if [[ $SNOWOBSTYPE == "GHCN" && $cyc != "00" ]]; then
+   export DO_JEDISNOWDA="NO"
+fi
+
 echo "END: config.sfcanl"
