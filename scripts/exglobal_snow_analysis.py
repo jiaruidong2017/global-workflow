@@ -21,10 +21,13 @@ if __name__ == '__main__':
     anl = SnowAnalysis(config)
     if anl.task_config.SNOWOBSTYPE == "GHCN":
         if anl.task_config.cyc == 0:
+            anl.prepare_IMS()
             anl.initialize()
             anl.execute()
             anl.finalize()
     else:
+        if anl.task_config.cyc == 0:
+            anl.prepare_IMS()
         anl.initialize()
         anl.execute()
         anl.finalize()
