@@ -83,6 +83,7 @@ class GFSCycledAppConfig(AppConfig):
             run_options[run]['do_jediatmens_split_obssol'] = base.get('DO_JEDIATMENS_SPLIT_OBSSOL', True)
             run_options[run]['do_jediocnvar'] = base.get('DO_JEDIOCNVAR', False)
             run_options[run]['do_jedisnowda'] = base.get('DO_JEDISNOWDA', False)
+            run_options[run]['do_jedisnowletkfda'] = base.get('DO_JEDISNOWLETKFDA', False)
             run_options[run]['do_gsisoilda'] = base.get('DO_GSISOILDA', False)
             run_options[run]['do_jedisoildavar'] = base.get('DO_JEDISOILDAVAR', False)
             run_options[run]['do_jedisoildaens'] = base.get('DO_JEDISOILDAENS', False)
@@ -212,6 +213,9 @@ class GFSCycledAppConfig(AppConfig):
             configs += ['snowanl']
             if options['do_hybvar']:
                 configs += ['esnowanl']
+
+        if options['do_jedisnowletkfda'] and options['do_hybvar']:
+            configs += ['snowletkfanl']
 
         if options['do_gsisoilda']:
             configs += ['sfcanl_regrid']
@@ -441,6 +445,7 @@ class GFSCycledAppConfig(AppConfig):
                         task_names[run] += ['marineanlecen']
 
                 task_names[run].append('esnowanl') if options['do_jedisnowda'] else 0
+                task_names[run].append('snowletkfanl') if options['do_jedisnowletkfda'] else 0
                 task_names[run].append('efcs') if 'gdas' in run else 0
                 task_names[run].append('epos') if 'gdas' in run else 0
 
