@@ -112,7 +112,7 @@ class SnowLetkfAnalysis(Analysis):
         self.task_config.update(parse_j2yaml(self.task_config.TASK_CONFIG_YAML, self.task_config))
 
         # Create JEDI object dictionary
-        expected_keys = ['snowletkfanl', 'scf_to_ioda'] #, 'snowensanlobs', 'snowensanlsol']
+        expected_keys = ['snowletkfanl', 'scf_to_ioda', 'esnowanlensmean'] #, 'snowensanlobs', 'snowensanlsol']
         self.jedi_dict = Jedi.get_jedi_dict(self.task_config.jedi_config, self.task_config, expected_keys)
 
         # Boolean to decide if SNOCVR_SNOMAD processing is done
@@ -153,6 +153,7 @@ class SnowLetkfAnalysis(Analysis):
         # Initialize JEDI applications
         logger.info(f"Initializing JEDI applications")
         self.jedi_dict['snowletkfanl'].initialize(clean_empty_obsspaces=False)
+        self.jedi_dict['esnowanlensmean'].initialize()
         #self.jedi_dict['snowensanlobs'].initialize() #clean_empty_obsspaces=False)
         #self.jedi_dict['snowensanlsol'].initialize() #clean_empty_obsspaces=False)
         if self.task_config.DO_IMS_SCF:

@@ -24,6 +24,9 @@ if __name__ == '__main__':
     # Initialize JEDI 2DVar snow analysis
     snow_letkf_anl.initialize()
 
+    # Calculate ensemble mean
+    snow_letkf_anl.execute('esnowanlensmean')
+
     # stage ensemble mean backgrounds ??why?
 
     # Process SNOCVR and SNOMAD (if applicable)
