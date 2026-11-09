@@ -368,7 +368,6 @@ class SnowLetkfAnalysis(Analysis):
                 'current_cycle': bkgtime,
                 'CASE': self.task_config.CASE,
                 'DATA': self.task_config.DATA,
-                'HOMEgfs': self.task_config.HOMEgfs,
                 'HOMEglobal': self.task_config.HOMEglobal,
                 'OCNRES': self.task_config.OCNRES,
                 'CASE_ENS': self.task_config.CASE_ENS,
