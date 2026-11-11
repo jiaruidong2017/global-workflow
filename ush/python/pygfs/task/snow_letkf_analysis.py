@@ -192,7 +192,7 @@ class SnowLetkfAnalysis(Analysis):
 
         # Archive, compress, and save diag files in COM directory
         logger.info(f"Saving observation diag files to COM")
-        self.jedi_dict['snowletkfanl'].save_obsdataout(self.task_config.COMOUT_SNOW_DIAG,
+        self.jedi_dict['snowletkfanl'].save_obsdataout(self.task_config.COMOUT_SNOW_ANALYSIS,
                                                      f"{self.task_config.RUN}.{to_YMDH(self.task_config.current_cycle)}.snow_analysis.ioda_hofx.ensmean")
 
         # Save files to COM
@@ -336,7 +336,7 @@ class SnowLetkfAnalysis(Analysis):
         self : Analysis
             Instance of the SnowLetkfAnalysis object
         """
-        
+
         if self.task_config.DOIAU:
             logger.info("Copying increments to beginning of window")
             template_in = f'snowinc.{to_fv3time(self.task_config.current_cycle)}.sfc_data.tile{{tilenum}}.nc'
@@ -357,52 +357,55 @@ class SnowLetkfAnalysis(Analysis):
             bkgtimes.append(self.task_config.WINDOW_BEGIN)
         bkgtimes.append(self.task_config.current_cycle)
 
-        #Add ens increments in parallel
-        logger.info(f"Adding increments to {self.task_config.NMEM_ENS} members") 
-        # loop over times to apply increments
-        for bkgtime in bkgtimes:
-            logger.info(f"Processing analysis valid: {bkgtime}")
-            logger.info("Create namelist for APPLY_INCR_EXE")
-            nml_template = self.task_config.LETKF_APPLY_INCR_NML_TMPL
-            nml_config = {
-                'current_cycle': bkgtime,
-                'CASE': self.task_config.CASE,
-                'DATA': self.task_config.DATA,
-                'HOMEglobal': self.task_config.HOMEglobal,
-                'OCNRES': self.task_config.OCNRES,
-                'CASE_ENS': self.task_config.CASE_ENS,
-                'ens_size': self.task_config.ens_size,
-                'ntiles': self.task_config.ntiles,
-                'noincr_threshold': self.task_config.noincr_threshold,
-                'print_debug': self.task_config.print_debug,
-                'truncate_incr': self.task_config.truncate_incr
-            }
-            nml_data = Jinja(nml_template, nml_config).render
-            logger.debug(f"apply_incr_nml:\n{nml_data}")
+        # loop over members
+        # TODO, make this better, or rewrite code to run in parallel
+        for mem in range(1, self.task_config.NMEM_ENS + 1):
+            logger.info(f"Processing member mem{mem:03d}")
+            # loop over times to apply increments
+            for bkgtime in bkgtimes:
+                logger.info(f"Processing analysis valid: {bkgtime}")
+                logger.info("Create namelist for APPLY_INCR_EXE")
+                nml_template = self.task_config.LETKF_APPLY_INCR_NML_TMPL
+                nml_config = {
+                    'current_cycle': bkgtime,
+                    'CASE': self.task_config.CASE,
+                    'DATA': self.task_config.DATA,
+                    'HOMEglobal': self.task_config.HOMEglobal,
+                    'OCNRES': self.task_config.OCNRES,
+                    'MYMEM': f"{mem:03d}",
+                    'CASE_ENS': self.task_config.CASE_ENS,
+                    'ens_size': self.task_config.ens_size,
+                    'ntiles': self.task_config.ntiles,
+                    'noincr_threshold': self.task_config.noincr_threshold,
+                    'print_debug': self.task_config.print_debug,
+                    'truncate_incr': self.task_config.truncate_incr
+                }
+                nml_data = Jinja(nml_template, nml_config).render
+                logger.debug(f"apply_incr_nml:\n{nml_data}")
 
-            nml_file = os.path.join(self.task_config.DATA, "apply_incr_nml")
-            if os.path.exists(nml_file):
-                rm_p(nml_file)
-            with open(nml_file, "w") as fho:
-                fho.write(nml_data)
+                nml_file = os.path.join(self.task_config.DATA, "apply_incr_nml")
+                if os.path.exists(nml_file):
+                    rm_p(nml_file)
+                with open(nml_file, "w") as fho:
+                    fho.write(nml_data)
 
-            logger.info("Link APPLY_INCR_EXE into DATA/")
-            exe_src = self.task_config.APPLY_INCR_EXE
-            exe_dest = os.path.join(self.task_config.DATA, os.path.basename(exe_src))
-            if os.path.exists(exe_dest):
-                rm_p(exe_dest)
-            os.symlink(exe_src, exe_dest)
+                logger.info("Link APPLY_INCR_EXE into DATA/")
+                exe_src = self.task_config.APPLY_INCR_EXE
+                exe_dest = os.path.join(self.task_config.DATA, os.path.basename(exe_src))
+                if os.path.exists(exe_dest):
+                    rm_p(exe_dest)
+                os.symlink(exe_src, exe_dest)
 
-            # execute APPLY_INCR_EXE to create analysis files
-            exe = Executable(self.task_config.APRUN_APPLY_INCR)
-            exe.add_default_arg(exe_dest)
-            logger.info(f"Executing {exe}")
-            try:
-                logger.debug(f"Executing {exe}")
-                exe()
-            except OSError:
-                logger.exception(f"Failed to execute {exe}")
-                raise
-            except Exception as err:
-                logger.exception(f"An error occured during execution of {exe}")
-                raise WorkflowException(f"An error occured during execution of {exe}") from err
+                # execute APPLY_INCR_EXE to create analysis files
+                exe = Executable(self.task_config.APRUN_APPLY_INCR)
+                exe.add_default_arg(exe_dest)
+                logger.info(f"Executing {exe}")
+                try:
+                    logger.debug(f"Executing {exe}")
+                    exe()
+                except OSError:
+                    logger.exception(f"Failed to execute {exe}")
+                    raise
+                except Exception as err:
+                    logger.exception(f"An error occured during execution of {exe}")
+                    raise WorkflowException(f"An error occured during execution of {exe}") from err

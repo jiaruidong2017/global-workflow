@@ -85,8 +85,8 @@ export err=$?
 if [[ ${err} -ne 0 ]]; then
     err_exit "Failed to change directory to DATAROOT!"
 fi
-if [[ "${KEEPDATA}" == "NO" ]]; then
-    rm -rf "${DATA}"
-fi
+#if [[ "${KEEPDATA}" == "NO" ]]; then
+#    rm -rf "${DATA}"
+#fi
 
 exit 0
