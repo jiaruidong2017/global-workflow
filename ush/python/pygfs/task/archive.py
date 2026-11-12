@@ -179,7 +179,7 @@ class Archive(Task):
 
         elif (
             ("enkf" in arch_dict.RUN and ensgrp == 0) or
-            arch_dict.RUN in ["gfs", "gefs", "gdas", "gcdas", "gcafs"]
+            arch_dict.RUN in ["gfs", "gefs", "sfs", "gdas", "gcdas", "gcafs"]
         ):
             # Single-pass rendering for EnKF mean/spread and deterministic runs
             # Snow LETKF archive configuration
@@ -375,10 +375,7 @@ class Archive(Task):
                 self.rm_cmd(atardir_set.target)
                 raise RuntimeError(f"FATAL ERROR: Failed to create restricted archive {atardir_set.target}, deleting!")
 
-            try:
-                self._protect_rstprod(atardir_set)
-            except Exception as e:
-                print(f"WARNING: _protect_rstprod failed: {e}")
+            self._protect_rstprod(atardir_set)
 
         else:
             self.cvf(atardir_set.target, atardir_set.fileset)
@@ -466,9 +463,7 @@ class Archive(Task):
         """
 
         try:
-            # self.chgrp_cmd("rstprod", atardir_set.target)
-            # Skip rstprod protection (no permission on HPSS)
-            return
+            self.chgrp_cmd("rstprod", atardir_set.target)
             if self.tar_cmd == "htar":
                 self.chmod_cmd("640", atardir_set.target)
             else:
