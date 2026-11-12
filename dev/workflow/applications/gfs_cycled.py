@@ -211,11 +211,12 @@ class GFSCycledAppConfig(AppConfig):
 
         if options['do_jedisnowda']:
             configs += ['snowanl']
-            if options['do_hybvar']:
-                configs += ['esnowanl']
 
-        if options['do_jedisnowletkfda'] and options['do_hybvar']:
-            configs += ['snowletkfanl']
+        if options['do_hybvar']:
+            if options['do_jedisnowletkfda']:
+                configs += ['snowletkfanl']
+            elif options['do_jedisnowda']:
+                configs += ['esnowanl']
 
         if options['do_gsisoilda']:
             configs += ['sfcanl_regrid']
@@ -444,8 +445,10 @@ class GFSCycledAppConfig(AppConfig):
                     if options['do_hybvar']:
                         task_names[run] += ['marineanlecen']
 
-                task_names[run].append('esnowanl') if options['do_jedisnowda'] else 0
-                task_names[run].append('snowletkfanl') if options['do_jedisnowletkfda'] else 0
+                if options['do_jedisnowletkfda']:
+                    task_names[run].append('snowletkfanl')
+                elif options['do_jedisnowda']:
+                    task_names[run].append('esnowanl')
                 task_names[run].append('efcs') if 'gdas' in run else 0
                 task_names[run].append('epos') if 'gdas' in run else 0
 

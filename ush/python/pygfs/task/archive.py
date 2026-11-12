@@ -179,9 +179,17 @@ class Archive(Task):
 
         elif (
             ("enkf" in arch_dict.RUN and ensgrp == 0) or
-            arch_dict.RUN in ["gfs", "gefs", "sfs", "gdas", "gcdas", "gcafs"]
+            arch_dict.RUN in ["gfs", "gefs", "gdas", "gcdas", "gcafs"]
         ):
             # Single-pass rendering for EnKF mean/spread and deterministic runs
+            # Snow LETKF archive configuration
+            def as_bool(value):
+                if isinstance(value, bool):
+                    return value
+                return str(value).strip().upper() in ("YES", "TRUE", "1")
+
+            arch_dict["DO_JEDISNOWDA"] = as_bool(arch_dict.get("DO_JEDISNOWDA", False))
+            arch_dict["DO_JEDISNOWLETKFDA"] = as_bool(arch_dict.get("DO_JEDISNOWLETKFDA", False))
             parsed_sets = parse_j2yaml(master_yaml_path, arch_dict, allow_missing=False)
             atardir_sets = self._process_additional_datasets(arch_dict, parsed_sets)
         else:
@@ -367,7 +375,10 @@ class Archive(Task):
                 self.rm_cmd(atardir_set.target)
                 raise RuntimeError(f"FATAL ERROR: Failed to create restricted archive {atardir_set.target}, deleting!")
 
-            self._protect_rstprod(atardir_set)
+            try:
+                self._protect_rstprod(atardir_set)
+            except Exception as e:
+                print(f"WARNING: _protect_rstprod failed: {e}")
 
         else:
             self.cvf(atardir_set.target, atardir_set.fileset)
@@ -455,7 +466,9 @@ class Archive(Task):
         """
 
         try:
-            self.chgrp_cmd("rstprod", atardir_set.target)
+            # self.chgrp_cmd("rstprod", atardir_set.target)
+            # Skip rstprod protection (no permission on HPSS)
+            return
             if self.tar_cmd == "htar":
                 self.chmod_cmd("640", atardir_set.target)
             else:

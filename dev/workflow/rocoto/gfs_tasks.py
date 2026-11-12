@@ -3155,11 +3155,11 @@ class GFSTasks(Tasks):
         else:
             dep_dict = {'type': 'task', 'name': f'{self.run.replace("enkf","")}_anal'}
             deps.append(rocoto.add_dependency(dep_dict))
-        if self.options['do_jedisnowda']:
-            dep_dict = {'type': 'task', 'name': f'{self.run}_esnowanl'}
-            deps.append(rocoto.add_dependency(dep_dict))
         if self.options['do_jedisnowletkfda']:
             dep_dict = {'type': 'task', 'name': f'{self.run}_snowletkfanl'}
+            deps.append(rocoto.add_dependency(dep_dict))
+        elif self.options['do_jedisnowda']:
+            dep_dict = {'type': 'task', 'name': f'{self.run}_esnowanl'}
             deps.append(rocoto.add_dependency(dep_dict))
         if self.options['do_gsisoilda'] and self.run in ['gdas'] and not self.options['do_gsiliau']:
             dep_dict = {'type': 'task', 'name': f'gdas_esfc_regrid'}
